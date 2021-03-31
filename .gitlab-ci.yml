@@ -1,0 +1,17 @@
+stages:
+  - build
+build_image:
+  stage: build
+  tags:
+    - docker-image
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - echo 'Building image...'
+    - test -z "${CI_COMMIT_TAG}" && CMD="/kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $GCP_HOST/$GCP_PROJECT/anskctl:master"
+    - test -n "${CI_COMMIT_TAG}" && CMD="/kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $GCP_HOST/$GCP_PROJECT/anskctl:$CI_COMMIT_TAG"
+    - echo $CMD
+    - $CMD
+ 
+
